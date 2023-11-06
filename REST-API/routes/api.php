@@ -36,13 +36,21 @@ Route::delete('animals/{id}', [AnimalController::class, "destroy"]);
 //Route untuk pertemuan 5
 
 //Route untuk menampilkan semua students
-Route::get('/students', [StudentController::class, "index"]);
+Route::get('students', [StudentController::class, "index"]);
 
 //Route untuk menambahkan students
-Route::post('/students', [StudentController::class, "store"]);
+Route::post('students', [StudentController::class, "store"]);
 
 //Route untuk mengedit students
-Route::put('/students/{id}', [StudentController::class, "update"]);
+Route::put('students/{id}', [StudentController::class, "update"]);
 
 //Route untuk menghapus students
-Route::delete('/students/{id}', [StudentController::class, "destroy"]);
+Route::delete('students/{id}', [StudentController::class, "destroy"]);
+
+//Route untuk melihat students
+Route::get('students/{id}', [StudentController::class, 'show']);
+
+//Route untuk update student
+Route::put('students/{id}', [StudentController::class, "update"]);
+
+//Route detail student
