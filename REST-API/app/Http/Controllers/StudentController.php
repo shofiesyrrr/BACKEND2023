@@ -40,6 +40,26 @@ class StudentController extends Controller
     {
         $statusCode = 201;
 
+        #Membuat validasi
+        $validatedData = $request->validate([
+            #kolom => 'rules|rules'
+            "nama" => "required",
+            "nim" => "required",
+            "email" => "required|email",
+            "jurusan" => "required"
+        ]);
+
+        #menggunakan model student untuk insert data
+        $student = Student::create($validatedData);
+
+        $data = [
+            'message' => 'Student is created succesfully',
+            'data' => $student,
+        ];
+
+        //mengembalikan data json dan kode 201
+        return response()->json($data, 201);
+
         //validasi data request
         $rules = [
             "nama" => "required",
