@@ -20,23 +20,56 @@ class Student {
     });
   }
 
-  /**
-   * TODO 1: Buat fungsi untuk insert data.
-   * Method menerima parameter data yang akan diinsert.
-   * Method mengembalikan data student yang baru diinsert.
-   */
-  static create(data) {
-    return new Promise((resolve, reject) => {
+  
+  static async create(data) {
+    // insert ke dalam database
+    const insertToDatabase = await new Promise((resolve, reject) => {
+      const query = "INSERT INTO students SET ?";
+
+      // set created_at dan updated_at ke waktu saat ini.
       data.created_at = new Date();
       data.updated_at = new Date();
 
-      const query = "INSERT INTO students SET ?";
-
-      db.query(query, data, (err, results)=> {
+      db.query(query, data, (err, results) => {
         if (err) reject(err);
         resolve(results);
       });
     });
+
+    // get data student yang baru diinsert
+    return await Student.find(insertToDatabase.insertId);
+  }
+
+  static async update(id, data) {
+    // update to database
+    const updateToDatabase = await new Promise((resolve, reject) => {
+      const query = "UPDATE students SET ? WHERE id = ?";
+
+      // set updated_at ke waktu sekarang
+      data.updated_at = new Date();
+
+      db.query(query, [data, id], (err, results) => {
+        if (err) reject(err);
+        resolve(results);
+      });
+    });
+    // get data student yang baru diupdate
+    return await Student.find(id);
+  }
+
+  static async destroy(id) {
+    // delete to database
+    const deleteToDatabase = await new Promise((resolve, reject) => {
+      const query = "DELETE FROM students WHERE id = ?";
+
+      db.query(query, id, (err, results) => {
+        if (err) reject(err);
+        resolve(results);
+      });
+    });
+
+    // get data student yang baru diupdate
+    return await Student.find(id);
   }
 }
 

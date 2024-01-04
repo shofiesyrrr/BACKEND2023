@@ -1,76 +1,116 @@
-// import Model Student
+// import model Student
 const Student = require("../models/Student");
 
+// Membuat Class StudentController
 class StudentController {
-  // menambahkan keyword async
-  async index(req, res) {
-    try {
-      const students = await Student.all();
-      const data = {
-        message: students,
-      };
+    async index(req, res) {
+        try {
+            const students = await Student.all();
+            const result = {
+                message: "Show All data students",
+                students: students,
+            };
 
-      res.json(data);
-    } catch (error) {
-      console.log(error);
-      res.json({
-        message: error.sqlMessage,
-      });
+            res.json(result);
+        } catch (error) {
+            console.log(error);
+            res.json({
+                message: error.sqlMessage,
+            });
+        }
     }
-  }
 
-  async store(req, res) {
-    /**
-     * TODO 2: memanggil method create.
-     * Method create mengembalikan data yang baru diinsert.
-     * Mengembalikan response dalam bentuk json.
-     */
-    const { nama, nim, email, jurusan } = req.body;
-    const reqData = {
-      nama : nama,
-      nim : nim,
-      email : email,
-      jurusan : jurusan
-    };
+    async store(req, res) {
+        try {
+            const data = req.body;
+            const student = await Student.create(data);
+            const result = {
+                message: "Insert data students",
+                student: student,
+            };
 
-    try {
-      await Student.create(reqData);
-      const data = {
-        message: "Menambahkan data student baru",
-        students: [reqData]
-      };
-
-      res.json(reqData);
-    } catch(error) {
-      console.log(error);
-      res.json({
-        message: error.sqlMessage,
-      });
+            res.json(result);
+        } catch (error) {
+            console.log(error);
+            res.json({
+                message: error.sqlMessage,
+            });
+        }
     }
-  }
 
-  update(req, res) {
-    const { id } = req.params;
-    const { nama } = req.body;
+    async update(req, res) {
+        const { id } = req.params;
 
-    const data = {
-      message: `Mengedit student id ${id}, nama ${nama}`,
-      data: [],
-    };
+        // check if student exists
+        const student = await Student.find(id);
+        if (!student) {
+            return res.status(404).json({
+                message: "Student not found",
+            });
+        }
 
-    res.json(data);
-  }
+        try {
+            const data = req.body;
+            const student = await Student.update(id, data);
+            const result = {
+                message: "Update data students",
+                student: student,
+            };
 
-  destroy(req, res) {
-    const { id } = req.params;
+            res.json(result);
+        } catch (error) {
+            console.log(error);
+            res.json({
+                message: error.sqlMessage,
+            });
+        }
+    }
 
-    const data = {
-      message: `Menghapus student id ${id}`,
-      data: [],
-    };
+    async destroy(req, res) {
+        const { id } = req.params;
 
-    res.json(data);
-  }
+        // check if student exists
+        const student = Student.find(id);
+        if (!student) {
+            return res.status(404).json({
+                message: "Student not found",
+            });
+        }
+
+        try {
+            Student.destroy(id);
+            const result = {
+                message: "Delete data students",
+                student: student,
+            };
+
+            res.json(result);
+        } catch (error) {
+            console.log(error);
+            res.json({
+                message: error.sqlMessage,
+            });
+        }
+    }
+
+    async show(req, res) {
+        const { id } = req.params;
+
+        const student = await Student.find(id);
+
+        if (!student) {
+            return res.status(404).json({
+                message: "Student not found",
+            });
+        }
+
+        const result = {
+            message: "Show data student",
+            student: student,
+        };
+
+        res.json(result);
+    }
 }
 
 // Membuat object StudentController
